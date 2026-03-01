@@ -7,6 +7,8 @@ require("dotenv").config();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {});
 
+const history = [];
+
 io.on("connection", (socket) => {
   console.log("User Connected.");
   socket.on("disconnect", () => {
@@ -18,12 +20,20 @@ io.on("connection", (socket) => {
   socket.on("get-content", async (data) => {
     try {
       console.log(data.prompt);
-      const response = await getContent(data.prompt);
+      history.push({
+        role: "user",
+        parts: [{ text: data.prompt }],
+      });
+      const response = await getContent(history);
+      history.push({
+        role: "model",
+        parts: [{ text: response }],
+      });
       console.log("AI Response: ", response);
-      socket.emit("ai-response", response);
+      socket.emit("ai-response", { response });
     } catch (error) {
       console.error("Error:", error.message);
-      socket.emit("ai-response", "API quota exceeded. Try later.");
+      socket.emit("ai-response", "API error. Try again.");
     }
   });
 });
