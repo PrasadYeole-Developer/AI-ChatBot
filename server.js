@@ -1,7 +1,7 @@
 const { Server } = require("socket.io");
 const app = require("./src/app");
 const { createServer } = require("http");
-const PORT = 3000;
+require("dotenv").config();
 
 const httpServer = createServer(app);
 const io = new Server(httpServer, {});
@@ -14,9 +14,10 @@ io.on("connection", (socket) => {
   socket.on("message", (message) => {
     console.log("Message received: ", message);
   });
+  
 });
 // IO is the main server and socket is the client that is connected to the server. We can use socket to send and receive messages from the client.
 
-httpServer.listen(3000, () => {
-  console.log(`Server is runnning on ${PORT}`);
+httpServer.listen(process.env.PORT, () => {
+  console.log(`Server is runnning on ${process.env.PORT}`);
 });
