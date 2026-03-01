@@ -4,8 +4,18 @@ const { createServer } = require("http");
 const PORT = 3000;
 
 const httpServer = createServer(app);
+const io = new Server(httpServer, {});
 
-Server.on("connection", (socket) => {});
+io.on("connection", (socket) => {
+  console.log("User Connected.");
+  socket.on("disconnect", () => {
+    console.log("User Disconnected.");
+  });
+  socket.on("message", (message) => {
+    console.log("Message received: ", message);
+  });
+});
+// IO is the main server and socket is the client that is connected to the server. We can use socket to send and receive messages from the client.
 
 httpServer.listen(3000, () => {
   console.log(`Server is runnning on ${PORT}`);
