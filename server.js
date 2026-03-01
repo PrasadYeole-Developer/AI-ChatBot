@@ -1,6 +1,7 @@
 const { Server } = require("socket.io");
 const app = require("./src/app");
 const { createServer } = require("http");
+const { getContent } = require("./src/service/ai.service");
 require("dotenv").config();
 
 const httpServer = createServer(app);
@@ -14,7 +15,17 @@ io.on("connection", (socket) => {
   socket.on("message", (message) => {
     console.log("Message received: ", message);
   });
-  
+  socket.on("get-content", async (data) => {
+    try {
+      console.log(data.prompt);
+      const response = await getContent(data.prompt);
+      console.log("AI Response: ", response);
+      socket.emit("ai-response", response);
+    } catch (error) {
+      console.error("Error:", error.message);
+      socket.emit("ai-response", "API quota exceeded. Try later.");
+    }
+  });
 });
 // IO is the main server and socket is the client that is connected to the server. We can use socket to send and receive messages from the client.
 
