@@ -5,7 +5,11 @@ const { getContent } = require("./src/service/ai.service");
 require("dotenv").config();
 
 const httpServer = createServer(app);
-const io = new Server(httpServer, {});
+const io = new Server(httpServer, {
+  cors: {
+    origin: "http://localhost:5173",
+  },
+});
 
 const history = [];
 
@@ -40,5 +44,5 @@ io.on("connection", (socket) => {
 // IO is the main server and socket is the client that is connected to the server. We can use socket to send and receive messages from the client.
 
 httpServer.listen(process.env.PORT, () => {
-  console.log(`Server is runnning on ${process.env.PORT}`);
+  console.log(`Server is running on ${process.env.PORT}`);
 });
