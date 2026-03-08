@@ -17,6 +17,7 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [socket, setSocket] = useState(null);
   const messagesEndRef = useRef(null);
+  const textareaRef = useRef(null);
 
   // Auto-scroll to bottom when new messages arrive
   const scrollToBottom = () => {
@@ -55,6 +56,7 @@ const App = () => {
   useEffect(() => {
     const socketInstance = io("http://localhost:3000");
     setSocket(socketInstance);
+    textareaRef.current?.focus();
 
     socketInstance.on("ai-response", (data) => {
       const botMessage = {
@@ -65,6 +67,7 @@ const App = () => {
       };
       setMessages((prev) => [...prev, botMessage]);
       setIsLoading(false);
+      textareaRef.current?.focus();
     });
 
     return () => {
@@ -128,7 +131,7 @@ const App = () => {
         ))}
 
         {/* Loading indicator */}
-        {!isLoading && (
+        {isLoading && (
           <div className="flex justify-start">
             <div className="bg-[#52616B]/50 text-gray-100 px-5 py-5 rounded rounded-bl-none">
               <div className="flex space-x-2">
@@ -154,6 +157,7 @@ const App = () => {
         <div className="flex space-x-3">
           <textarea
             value={inputValue}
+            ref={textareaRef}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder="Type your message here..."
