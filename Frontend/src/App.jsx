@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import { io } from "socket.io-client";
+import { GrSend } from "react-icons/gr";
+import { FaHourglassEnd } from "react-icons/fa6";
 
 const App = () => {
   const [messages, setMessages] = useState([
@@ -24,7 +26,7 @@ const App = () => {
   const handleSendMessage = async () => {
     // Validate input
     if (!inputValue.trim()) {
-      toast.error("Please enter the message!");
+      toast.error("Please enter the message!", { duration: 2000 });
       return;
     }
 
@@ -38,7 +40,6 @@ const App = () => {
 
     setMessages((prev) => [...prev, userMessage]);
     setInputValue("");
-    toast.success("Message sent!");
 
     setIsLoading(true);
     socket.emit("get-content", { prompt: inputValue });
@@ -76,14 +77,12 @@ const App = () => {
   }, [messages]);
 
   return (
-    <div className="flex flex-col h-screen bg-linear-to-br from-slate-900 via-slate-800 to-black select-none">
-      <Toaster position="top-center" reverseOrder={false} />
+    <div className="flex flex-col h-screen bg-linear-to-br from-[#1E2022] via-[#1E2022] to-black select-none">
+      <Toaster position="top-right" reverseOrder={false} />
       {/* Header */}
-      <div className="bg-linear-to-r from-purple-600 to-blue-600 text-white p-4 shadow-lg">
-        <h1 className="text-2xl font-bold">AI ChatBot</h1>
-        <p className="text-sm opacity-90">
-          Your intelligent conversation partner
-        </p>
+      <div className="bg-[#C9D6DF] text-[#1E2022] p-5 shadow-lg flex flex-col items-center justify-center">
+        <h1 className="text-2xl font-black pb-1">YapBot</h1>
+        <p className="text-xs opacity-90">Your AI chat buddy</p>
       </div>
 
       {/* Messages Container */}
@@ -96,7 +95,7 @@ const App = () => {
             }`}
           >
             <div
-              className={`max-w-xs lg:max-w-md px-4 py-3 rounded-lg shadow-md ${
+              className={`max-w-xs lg:max-w-md px-4 py-3 rounded shadow-md ${
                 message.sender === "user"
                   ? "bg-blue-600 text-white rounded-br-none"
                   : "bg-slate-700 text-gray-100 rounded-bl-none"
@@ -122,7 +121,7 @@ const App = () => {
         {/* Loading indicator */}
         {isLoading && (
           <div className="flex justify-start">
-            <div className="bg-slate-700 text-gray-100 px-4 py-3 rounded-lg rounded-bl-none">
+            <div className="bg-slate-700 text-gray-100 px-4 py-3 rounded rounded-bl-none">
               <div className="flex space-x-2">
                 <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
                 <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-100"></div>
@@ -143,19 +142,23 @@ const App = () => {
             onChange={(e) => setInputValue(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder="Type your message here..."
-            className="flex-1 resize-none bg-slate-700 text-white placeholder-gray-400 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-slate-600 transition-all max-h-32"
+            className="flex-1 resize-none bg-slate-700 text-white placeholder-gray-400 rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-slate-600 transition-all max-h-32"
             disabled={isLoading}
           />
           <button
             onClick={handleSendMessage}
             disabled={isLoading}
-            className={`px-6 py-3 rounded-lg font-semibold transition-transform hover:scale-105 cursor-pointer active:scale-95 ${
+            className={`px-6 py-3 rounded font-semibold transition-transform hover:scale-105 cursor-pointer active:scale-95 ${
               isLoading || !inputValue.trim()
                 ? "bg-gray-600 text-gray-400 cursor-not-allowed"
                 : "bg-linear-to-r from-blue-500 to-purple-600 text-white hover:shadow-lg"
             }`}
           >
-            {isLoading ? "Sending..." : "Send"}
+            {isLoading ? (
+              <FaHourglassEnd className="animate-spin" />
+            ) : (
+              <GrSend />
+            )}
           </button>
         </div>
         <p className="text-xs text-gray-400 mt-2">
