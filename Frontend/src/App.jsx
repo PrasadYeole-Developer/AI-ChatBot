@@ -30,6 +30,10 @@ const App = () => {
       toast.error("Please enter the message!");
       return;
     }
+    if (!socket) {
+      toast.error("Server connection not ready.");
+      return;
+    }
 
     // Add user message
     const userMessage = {
@@ -61,9 +65,7 @@ const App = () => {
     socketInstance.on("ai-response", (data) => {
       try {
         if (!data?.response) {
-          throw new Error(
-            "It seems like I couldn't generate a response. Please try again.",
-          );
+          throw new Error("YapBot had a small brain freeze. Try again.");
         }
         const botMessage = {
           id: Date.now(),
