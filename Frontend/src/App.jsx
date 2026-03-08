@@ -130,11 +130,17 @@ const App = () => {
         {/* Loading indicator */}
         {!isLoading && (
           <div className="flex justify-start">
-            <div className="bg-[#52616B]/50 text-gray-100 px-4 py-4 rounded rounded-bl-none">
+            <div className="bg-[#52616B]/50 text-gray-100 px-5 py-5 rounded rounded-bl-none">
               <div className="flex space-x-2">
                 <div className="w-2 h-2 p-1 bg-[#C9D6DF] rounded-full animate-bounce"></div>
-                <div className="w-2 h-2 p-1 bg-[#C9D6DF] rounded-full animate-bounce delay-500"></div>
-                <div className="w-2 h-2 p-1 bg-[#C9D6DF] rounded-full animate-bounce delay-1000"></div>
+                <div
+                  className="w-2 h-2 p-1 bg-[#C9D6DF] rounded-full animate-bounce"
+                  style={{ animationDelay: "0.2s" }}
+                ></div>
+                <div
+                  className="w-2 h-2 p-1 bg-[#C9D6DF] rounded-full animate-bounce"
+                  style={{ animationDelay: "0.4s" }}
+                ></div>
               </div>
             </div>
           </div>
