@@ -59,15 +59,26 @@ const App = () => {
     textareaRef.current?.focus();
 
     socketInstance.on("ai-response", (data) => {
-      const botMessage = {
-        id: messages.length + 1,
-        text: data.response,
-        sender: "bot",
-        timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, botMessage]);
-      setIsLoading(false);
-      textareaRef.current?.focus();
+      try {
+        if (!data?.response) {
+          throw new Error(
+            "It seems like I couldn't generate a response. Please try again.",
+          );
+        }
+        const botMessage = {
+          id: Date.now(),
+          text: data.response,
+          sender: "bot",
+          timestamp: new Date(),
+        };
+        setMessages((prev) => [...prev, botMessage]);
+      } catch (error) {
+        console.error("AI response error:", error);
+        toast.error(error.message ?? "Something went wrong.");
+      } finally {
+        setIsLoading(false);
+        textareaRef.current?.focus();
+      }
     });
 
     return () => {
@@ -153,7 +164,7 @@ const App = () => {
       </div>
 
       {/* Input Area */}
-      <div className="border-t border-slate-700 bg-slate-800 p-4 shadow-lg">
+      <div className="border-t border-[#52616B] bg-[#52616B]/50 p-4 shadow-lg">
         <div className="flex space-x-3">
           <textarea
             value={inputValue}
@@ -161,7 +172,7 @@ const App = () => {
             onChange={(e) => setInputValue(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder="Type your message here..."
-            className="flex-1 resize-none bg-slate-700 text-white placeholder-gray-400 rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#C9D6DF] border border-slate-600 transition-all max-h-32"
+            className="flex-1 resize-none bg-[#1E2022] text-white placeholder:text-[#C9D6DF] rounded-xs px-4 py-3 focus:outline-none focus:ring-1 focus:ring-[#C9D6DF] duration-500 max-h-32"
             disabled={isLoading}
           />
           <button
@@ -169,7 +180,7 @@ const App = () => {
             disabled={isLoading}
             className={`px-6 py-3 rounded font-semibold transition-transform hover:scale-105 cursor-pointer active:scale-95 ${
               isLoading || !inputValue.trim()
-                ? "bg-[#52616B] text-gray-400 cursor-not-allowed"
+                ? "bg-[#52616B]/30 text-gray-400 cursor-not-allowed"
                 : "bg-linear-to-br from-[#1E2022] via-[#1E2022]/90 to-[#52616B] text-white hover:shadow-lg"
             }`}
           >
@@ -180,7 +191,7 @@ const App = () => {
             )}
           </button>
         </div>
-        <p className="text-xs text-gray-400 mt-2">
+        <p className="text-xs text-[#C9D6DF] mt-2">
           Press Enter to Send, Shift + Enter for new line
         </p>
       </div>
